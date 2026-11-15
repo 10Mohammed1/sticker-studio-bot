@@ -1,0 +1,17 @@
+services:
+  bot:
+    build: .
+    container_name: sticker-studio
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATA_DIR: /app/data
+      TEMP_DIR: /app/data/tmp
+      DATABASE_PATH: /app/data/sticker_studio.sqlite3
+    volumes:
+      - sticker_data:/app/data
+    # Long polling: no ports are required.
+
+volumes:
+  sticker_data:

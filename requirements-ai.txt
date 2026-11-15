@@ -1,0 +1,2 @@
+# Optional local AI background removal. The model is downloaded on first use.
+rembg[cpu]>=2.0.60,<3.0

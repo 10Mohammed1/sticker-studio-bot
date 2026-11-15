@@ -1,0 +1,1 @@
+"""Sticker image editor package."""
