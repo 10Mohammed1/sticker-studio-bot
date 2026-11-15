@@ -36,8 +36,7 @@ RUN useradd --create-home --uid 1000 app \
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod 755 /usr/local/bin/docker-entrypoint.sh
 
-# Start as root only to fix the mounted volume ownership, then drop to "app".
-VOLUME ["/app/data"]
-
+# Railway storage is attached in the service settings at /app/data.
+# The entrypoint fixes its ownership, then drops privileges to the "app" user.
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["python", "-m", "bot.main"]
