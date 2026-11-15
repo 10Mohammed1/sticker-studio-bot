@@ -54,11 +54,11 @@ class ConfigTests(unittest.TestCase):
         self.assertFalse(settings.auto_pack)
         self.assertEqual(settings.telegram_proxy, "socks5://127.0.0.1:1080")
 
-    def test_auto_pack_is_on_by_default(self) -> None:
+    def test_auto_pack_is_off_by_default(self) -> None:
         with patch.dict(os.environ, {"BOT_TOKEN": "123456789:TOKEN"}, clear=False):
             os.environ.pop("AUTO_PACK", None)
             settings = Settings.from_env()
-        self.assertTrue(settings.auto_pack)
+        self.assertFalse(settings.auto_pack)
 
     def test_placeholder_token_is_rejected(self) -> None:
         with patch.dict(os.environ, {"BOT_TOKEN": "PUT_YOUR_BOT_TOKEN_HERE"}, clear=False):

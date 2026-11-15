@@ -30,7 +30,7 @@ from .packs.manager_handlers import router as pack_manager_router
 from .tasks.maintenance import purge_feature_sessions, purge_work_dir
 from .tasks.runtime import start_queue, stop_queue
 
-VERSION = "4.1.0"
+VERSION = "4.1.1"
 TOKEN_PATTERN = re.compile(r"bot\d{8,}:[A-Za-z0-9_-]{20,}")
 log = logging.getLogger("sticker-studio")
 

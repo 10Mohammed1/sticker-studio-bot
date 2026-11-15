@@ -16,28 +16,33 @@
 
 ## المتغيرات المطلوبة
 
+المطلوب فعليًا متغيّران فقط:
+
 | Variable | Value |
 |---|---|
 | `BOT_TOKEN` | توكن من @BotFather |
 | `ADMIN_IDS` | رقم Telegram ID الخاص بك |
-| `DATA_DIR` | `/app/data` |
-| `DATABASE_PATH` | `/app/data/sticker_studio.sqlite3` |
+
+القيم التالية مضبوطة داخل الصورة أو افتراضية، وأضفها فقط إن أردت تغييرها:
+
+| Variable | الافتراضي |
+|---|---|
+| `DATA_DIR` | `/app/data` (داخل Dockerfile) |
 | `TEMP_DIR` | `/app/data/tmp` |
-| `MAX_CONCURRENT_JOBS` | `1` |
-| `MAX_DOWNLOAD_MB` | `20` |
-| `ENABLE_BG_REMOVAL` | `0` كبداية لتوفير الذاكرة |
 | `AUTO_PACK` | `0` |
 | `BACKUP_ENABLED` | `1` |
 | `BACKUP_INTERVAL_HOURS` | `6` |
 | `BACKUP_KEEP` | `7` |
+| `MAX_CONCURRENT_JOBS` | `1` |
+| `ENABLE_BG_REMOVAL` | `0` |
 | `LOG_LEVEL` | `INFO` |
-| `RAILWAY_RUN_UID` | `0` لتشغيل الحاوية بصلاحية الكتابة على Volume |
+| `RAILWAY_RUN_UID` | غير مطلوب؛ الصورة تضبط ملكية الـVolume ثم تعمل بمستخدم `app` |
 
 لا تضع `BOT_TOKEN` في GitHub أو داخل ملف الكود. أضفه فقط في Railway Variables.
 
 ## ملاحظات التشغيل
 
-- Volume ضروري حتى لا تضيع قاعدة SQLite والمفضلة والإعدادات وجلسات التحرير بعد إعادة النشر. Railway يركّب الـVolume بصلاحيات root؛ لذلك أضف `RAILWAY_RUN_UID=0` إلى Variables حتى يستطيع مستخدم التطبيق الكتابة على مسار `/app/data`، وراجع صلاحيات المجلد في Deploy Logs إذا ظهر خطأ Permission denied.
+- Volume ضروري حتى لا تضيع قاعدة SQLite والمفضلة والإعدادات وجلسات التحرير بعد إعادة النشر. Railway يركّب الـVolume بصلاحيات root، وصورة المشروع تضبط الملكية تلقائيًا عند الإقلاع ثم تعمل بمستخدم غير جذري؛ لا تحتاج أي متغير إضافي. إن واجهت `Permission denied` على نسخة قديمة أضف `RAILWAY_RUN_UID=0`.
 - النسخ الاحتياطي الدوري تلقائي: كل `BACKUP_INTERVAL_HOURS` ساعة تُكتب نسخة متسقة في `/app/data/backups` بعد فحص `PRAGMA integrity_check`، ويُحتفظ بأحدث `BACKUP_KEEP` نسخة فقط. بما أن المجلد داخل Volume فإن النسخ تبقى بعد إعادة النشر. لتحميل نسخة فورية استخدم زر 📥 نسخة احتياطية في `/admin`.
 - تُطبَّق ملفات `migrations/*.sql` تلقائيًا عند الإقلاع مرة واحدة، ويُسجَّل رقمها في `schema_migrations`. جميعها إضافية ولا تحذف جداول 4.0 أو بياناتها.
 - `AUTO_PACK=0` يوقف إنشاء الحزم التلقائي تمامًا: التحويل يعمل وتُرسل الملفات، ولا تُنشأ حزمة إلا بأمر `/newpack` أو باختيار حزمة من `/packs`. لإعادة الحزم الدائمة التلقائية اضبط `AUTO_PACK=1`.

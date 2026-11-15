@@ -1,4 +1,4 @@
-# تقرير اختبار Sticker Studio 4.1.0
+# تقرير اختبار Sticker Studio 4.1.1
 
 تاريخ آخر تحديث: 15 نوفمبر 2026
 
@@ -30,6 +30,15 @@ $env:FFPROBE_PATH="...\ffprobe.exe"
 ```
 
 الملف الكامل للسجل: `test-full.log`، وسجل اختبارات الحزم الدائمة: `test-autopacks.log`.
+
+## إعداد مبسّط — 4.1.1 (متغيّران فقط)
+
+- `bot/config.py`: `AUTO_PACK` افتراضيًا `False` (كما هو في `.env.example`).
+- `Dockerfile`: إضافة `gosu`، وentrypoint يبدأ كـ root لإصلاح ملكية `/app/data` ثم ينتقل إلى `app` (uid 1000). لا need لـ `RAILWAY_RUN_UID`.
+- `docker-compose.yml`: لم يتغيّر (Volume على `/app/data`).
+- `scripts/install-vps.sh`: مثبّت Ubuntu/Debian بأمر واحد: يثبّت Docker، ينشئ `admin` (sudo+docker)، يولّد كلمة مرور قوية ويُطبعها مرة واحدة، يجلب المستودع، يسأل عن `BOT_TOKEN` و`ADMIN_IDS` (أو يستخدم متغيرات البيئة)، ويُشغّل compose.
+- `.env.example`: متغيّران مطلوبان (`BOT_TOKEN`، `ADMIN_IDS`) مع توثيق كل البقية.
+- `tests/test_config.py`: `test_auto_pack_is_off_by_default` (200 اختبارًا 여전히).
 
 ## الوضع اليدوي فقط (بعد مراجعة المستخدم)
 

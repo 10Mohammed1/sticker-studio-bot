@@ -21,7 +21,7 @@ class ImportSmokeTests(unittest.TestCase):
     def test_pipeline_limits_are_loaded(self) -> None:
         self.assertGreaterEqual(handlers.settings.max_concurrent_jobs, 1)
         self.assertGreaterEqual(handlers.settings.max_download_mb, 1)
-        self.assertEqual(main.VERSION, "4.1.0")
+        self.assertEqual(main.VERSION, "4.1.1")
 
     def test_admin_check_uses_settings(self) -> None:
         # Patch the frozen settings locally instead of relying on import order.

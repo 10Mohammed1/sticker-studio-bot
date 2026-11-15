@@ -1,4 +1,4 @@
-# Sticker Studio Bot — الإصدار 4.1.0
+# Sticker Studio Bot — الإصدار 4.1.1
 
 بوت تيليجرام واحد يجمع بين:
 
@@ -8,6 +8,24 @@
 المشروع يعمل بـ **aiogram 3.31** فقط، بعد توحيد الاعتماديات وإزالة ازدواجية الإطارين.
 
 ---
+
+## أسرع بداية — متغيّران فقط
+
+كل ما تحتاجه: `BOT_TOKEN` و`ADMIN_IDS`. الباقي له قيم افتراضية صالحة
+(`DATA_DIR=/app/data` داخل Docker، نسخ احتياطي كل 6 ساعات، `AUTO_PACK=0`).
+
+| البيئة | الخطوة |
+|---|---|
+| VPS جديد | `bash scripts/install-vps.sh` على Ubuntu/Debian — يثبّت Docker ويجهّز المستخدم `admin` ويشغّل البوت. التفاصيل: [VPS-DEPLOY-AR.md](VPS-DEPLOY-AR.md) |
+| Railway | Deploy من المستودع + Volume على `/app/data` + المتغيّرين. التفاصيل: [RAILWAY-DEPLOY-AR.md](RAILWAY-DEPLOY-AR.md) |
+| Docker محلي | `cp .env.example .env` ثم ضع التوكن والرقم ثم `docker compose up -d --build` |
+
+## ما الجديد في 4.1.1 — إعداد بمتغيّرين فقط
+
+- **لا need لـ `RAILWAY_RUN_UID` أو `DATA_DIR`**: صورة Docker تبدأ كـ root، تضبط ملكية Volume تلقائيًا، ثم تنتقل إلى مستخدم `app` (gosu). Railway/VPS/Docker compose تعمل من دون متغيرات إضافية.
+- **`.env` يطلب متغيّرين فقط**: `BOT_TOKEN` و`ADMIN_IDS`. الباقي (مسارات، نسخ احتياطي، حدود) له قيم افتراضية صالحة.
+- **مثبّت VPS بأمر واحد**: `bash scripts/install-vps.sh` ينشئ مستخدم `admin` مع صلاحية sudo وDocker، يجلب المستودع، يسأل عن التوكن والرقم، ويولّد كلمة مرور قوية (تُطبع مرة واحدة). لإجبار كلمة مرور مخصّصة: `ADMIN_PASSWORD=admin bash install-vps.sh` (غير مُوصى به).
+- **Docker volume**: `/app/data` (قاعدة SQLite + النسخ الاحتياطية) يُحفظ تلقائيًا.
 
 ## ما الذي أُصلح وطُوّر في الدمج؟
 
@@ -21,7 +39,7 @@
 - تأمين رسائل الخطأ: تُهرب النصوص الديناميكية قبل إرسالها مع `parse_mode=HTML`.
 - إخفاء توكن البوت من السجلات حتى داخل التتبعات (Traceback).
 - إبقاء الناتج يُرسل كـ **Document** كما في النسخة الأصلية، وإضافة نسخة إلى الحزمة النشطة.
-- **حزمة تلقائية**: كل ما يرسله المستخدم يدخل حزمة واحدة دون `/newpack`، وتُسمّى باسمه تلقائيًا (`AUTO_PACK=0` يعطّل ذلك).
+- **حزمة تلقائية (اختيارية)**: عند `AUTO_PACK=1` يدخل كل ما يرسله المستخدم في حزمة واحدة تُسمّى باسمه. الافتراضي `0`: لا حزمة إلا بأمر `/newpack`.
 - **حفظ ملصقات تيليجرام كما هي**: الملصق الثابت WEBP ومتحرك TGS وملصق الفيديو WEBM الوارد تُمرَّر دون إعادة ترميز (لا تفقد الشفافية ولا تحتاج FFmpeg).
 - توحيد `MAX_CONCURRENT_JOBS` و`USER_COOLDOWN_SECONDS` و`MAINTENANCE_MODE` في إعداد واحد.
 - إضافة اختبارات `unittest` للدمج، والحزم، وقاعدة البيانات، وفحص الملفات، والتحويل.
@@ -306,7 +324,7 @@ python -m unittest tests.test_auto_packs -v
 python scripts/make_release.py
 ```
 
-يُنتج `dist/StickerStudioBot-4.1.0-full.zip` بدون `.env` أو `.venv` أو `data` أو سجلات.
+يُنتج `dist/StickerStudioBot-4.1.1-full.zip` بدون `.env` أو `.venv` أو `data` أو سجلات.
 
 ---
 

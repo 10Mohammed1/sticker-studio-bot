@@ -144,7 +144,7 @@ class Settings:
             maintenance_default=env_bool("MAINTENANCE_MODE", False),
             max_concurrent_jobs=env_int("MAX_CONCURRENT_JOBS", 1, minimum=1, maximum=16),
             force_ipv4=env_bool("FORCE_IPV4", True),
-            auto_pack=env_bool("AUTO_PACK", True),
+            auto_pack=env_bool("AUTO_PACK", False),
             telegram_proxy=os.getenv("TELEGRAM_PROXY", "").strip(),
             log_level=os.getenv("LOG_LEVEL", "INFO").strip().upper() or "INFO",
             admin_usernames=parse_admin_usernames(os.getenv("ADMIN_USERNAMES", "")),

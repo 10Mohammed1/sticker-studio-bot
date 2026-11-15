@@ -10,8 +10,9 @@ ENV PYTHONUNBUFFERED=1 \
     TEMP_DIR=/app/data/tmp
 
 # FFmpeg is needed for GIF/video/audio and /motion conversions.
+# gosu lets the container fix the volume ownership and then drop to "app".
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core \
+    && apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core gosu \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -32,7 +33,11 @@ RUN useradd --create-home --uid 1000 app \
     && mkdir -p /app/data \
     && chown -R app:app /app
 
-USER app
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod 755 /usr/local/bin/docker-entrypoint.sh
+
+# Start as root only to fix the mounted volume ownership, then drop to "app".
 VOLUME ["/app/data"]
 
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["python", "-m", "bot.main"]
